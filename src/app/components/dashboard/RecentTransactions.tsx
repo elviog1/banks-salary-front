@@ -27,7 +27,7 @@ export default function RecentTransactions({ transactions, cards }: RecentTransa
       
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         {recentTransactions.map((transaction, index) => {
-          const card = cards.find(c => c._id === transaction.card)
+          const card = cards.find(c => c?._id === transaction?.card)
           return (
             <div 
               key={transaction._id} 
@@ -40,7 +40,7 @@ export default function RecentTransactions({ transactions, cards }: RecentTransa
                   className="w-12 h-12 rounded-xl flex items-center justify-center"
                   style={{ backgroundColor: `${card?.color}20` }}
                 >
-                  {transaction.amount >= 0 ? (
+                  {transaction?.amount >= 0 ? (
                     <TrendingUp className="w-6 h-6" style={{ color: card?.color }} />
                   ) : (
                     <TrendingDown className="w-6 h-6" style={{ color: card?.color }} />
