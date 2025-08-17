@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export interface Card {
   _id: string;
@@ -23,12 +23,12 @@ export function useCards() {
   const [totalBalance, setTotalBalance] = useState(0);
 
   useEffect(() => {
-  const total = cards.reduce((sum, card) => {
-    const balance = Number(card.balance) || 0; // conversión segura
-    return sum + balance;
-  }, 0);
-  setTotalBalance(total);
-}, [cards]);
+    const total = cards.reduce((sum, card) => {
+      const balance = Number(card.balance) || 0; // conversión segura
+      return sum + balance;
+    }, 0);
+    setTotalBalance(total);
+  }, [cards]);
 
   // Obtener token al montar
   useEffect(() => {
@@ -36,16 +36,7 @@ export function useCards() {
     setToken(storedToken);
   }, []);
 
-  // Cargar cards cuando haya token
-  useEffect(() => {
-    if (token) {
-      fetchCards();
-    } else {
-      setIsLoading(false);
-    }
-  }, [token]);
-
-  const fetchCards = async () => {
+  const fetchCards = useCallback(async () => {
     if (!token) return;
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/cards`, {
@@ -66,7 +57,16 @@ export function useCards() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token]);
+
+  // Cargar cards cuando haya token
+  useEffect(() => {
+    if (token) {
+      fetchCards();
+    } else {
+      setIsLoading(false);
+    }
+  }, [fetchCards,token]);
 
   const createCard = async ({ name, color }: CreateCardInput) => {
     if (!token) throw new Error("No autenticado");
@@ -93,12 +93,15 @@ export function useCards() {
   const deleteCard = async (cardId: string) => {
     if (!token) throw new Error("No autenticado");
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/cards/${cardId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_DB_URL}/cards/${cardId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (!response.ok) {
       const errData = await response.json();
@@ -115,14 +118,17 @@ export function useCards() {
   ) => {
     if (!token) throw new Error("No autenticado");
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/cards/${cardId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(updates),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/cards/${cardId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updates),
+        }
+      );
 
       if (!response.ok) {
         const errData = await response.json();
@@ -139,19 +145,21 @@ export function useCards() {
       );
 
       return updatedCard;
-    } catch (error:any) {
+    } catch (error: any) {
       setError(error.message || "Error desconocido");
       throw error;
     }
   };
 
   const updateCardBalance = (cardId: string, amount: number) => {
-  setCards((prevCards) =>
-    prevCards.map((card) =>
-      card._id === cardId ? { ...card, balance: (card.balance || 0) + amount } : card
-    )
-  );
-};
+    setCards((prevCards) =>
+      prevCards.map((card) =>
+        card._id === cardId
+          ? { ...card, balance: (card.balance || 0) + amount }
+          : card
+      )
+    );
+  };
 
   return {
     cards,
