@@ -100,7 +100,7 @@ export default function TransactionHistory({
             </div>
           ) : (
             filteredTransactions.map(transaction => {
-              const card = cards.find(c => c._id === transaction.card._id)
+              const card = cards.find(c => c._id === transaction.card)
               return (
                 <div key={transaction._id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200">
                   <div className="flex items-center justify-between">

@@ -27,7 +27,7 @@ export default function RecentTransactions({ transactions, cards }: RecentTransa
       
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         {recentTransactions.map((transaction, index) => {
-          const card = cards.find(c => c._id === transaction.card._id)
+          const card = cards.find(c => c._id === transaction.card)
           return (
             <div 
               key={transaction._id} 
