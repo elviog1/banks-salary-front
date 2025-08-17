@@ -50,9 +50,11 @@ export function useTransactions(cardId?: string) {
       const total = data.reduce((sum, tx) => sum + tx.amount, 0);
       setBalance(total);
       return data
-    } catch (err: any) {
-      setError(err.message || "Error desconocido");
-      return null; // 👈 para que no quede undefined
+    } catch (err) {
+      if(err instanceof Error){
+        setError(err.message || "Error desconocido");
+        return null; // 👈 para que no quede undefined
+      }
     } finally {
       setIsLoading(false);
     }
@@ -87,8 +89,10 @@ export function useTransactions(cardId?: string) {
       setBalance((prev) => prev + newTx.amount);
       fetchTransactions();
       return newTx;
-    } catch (err: any) {
-      setError(err.message || "Error desconocido");
+    } catch (err) {
+      if(err instanceof Error){
+        setError(err.message || "Error desconocido");
+      }
       throw err;
     }
   };

@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function ResetPasswordForm() {
   const params = useParams();
-  const token = params.token
+  const token = params.token;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -47,9 +47,11 @@ export default function ResetPasswordForm() {
 
       setIsSuccess(true);
       setMessage(data.message || "Contraseña cambiada correctamente");
-    } catch (err: any) {
-      setIsError(true);
-      setMessage(err.message || "Ocurrió un error inesperado");
+    } catch (err) {
+      if (err instanceof Error) {
+        setIsError(true);
+        setMessage(err.message || "Ocurrió un error inesperado");
+      }
     } finally {
       setIsLoading(false);
     }

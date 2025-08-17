@@ -33,9 +33,11 @@ export default function ForgotPasswordPage() {
 
       setIsSuccess(true)
       setMessage("Correo enviado correctamente. Revisá tu bandeja de entrada.")
-    } catch (err: any) {
-      setIsError(true)
-      setMessage(err.message || "Ocurrió un error inesperado")
+    } catch (err) {
+      if(err instanceof Error){
+        setIsError(true)
+        setMessage(err.message || "Ocurrió un error inesperado")
+      }
     } finally {
       setIsLoading(false)
     }

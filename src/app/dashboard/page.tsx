@@ -31,8 +31,10 @@ export default function DashboardPage() {
       await deleteCard(cardId);
       // Si quieres forzar recarga desde backend:
       // await fetchCards();
-    } catch (error: any) {
-      alert(error.message || "Error al eliminar la tarjeta");
+    } catch (error) {
+      if(error instanceof Error){
+        alert(error.message || "Error al eliminar la tarjeta");
+      }
     }
   };
 
@@ -40,8 +42,10 @@ export default function DashboardPage() {
     try {
       await createCard({ name, color });
       setShowAddCard(false);
-    } catch (error: any) {
-      alert(error.message || "Error al crear la tarjeta");
+    } catch (error) {
+      if(error instanceof Error){
+        alert(error.message || "Error al crear la tarjeta");
+      }
     }
   };
 
@@ -49,8 +53,10 @@ export default function DashboardPage() {
   try {
     await updateCard(cardId,{ name, color });
     setEditingCard(null);
-  } catch (error: any) {
-    alert(error.message || "Error al actualizar la tarjeta");
+  } catch (error) {
+    if(error instanceof Error){
+      alert(error.message || "Error al actualizar la tarjeta");
+    }
   }
 };
 
@@ -73,8 +79,10 @@ const handleAddTransaction = async (e: React.FormEvent<HTMLFormElement>) => {
     setShowAddTransaction(false);
     form.reset();
     //fetchTransactions(); // refrescar lista
-  } catch (err: any) {
-    alert(err.message || "Error al crear la transacción");
+  } catch (err) {
+    if(err instanceof Error){
+      alert(err.message || "Error al crear la transacción");
+    }
   }
   };
 

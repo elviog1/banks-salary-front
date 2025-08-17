@@ -52,8 +52,10 @@ export function useCards() {
 
       const data = await response.json();
       setCards(data);
-    } catch (err: any) {
-      setError(err.message || "Error desconocido");
+    } catch (err) {
+      if(err instanceof Error){
+        setError(err.message || "Error desconocido");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -145,8 +147,10 @@ export function useCards() {
       );
 
       return updatedCard;
-    } catch (error: any) {
-      setError(error.message || "Error desconocido");
+    } catch (error) {
+      if(error instanceof Error){
+        setError(error.message || "Error desconocido");
+      }
       throw error;
     }
   };
